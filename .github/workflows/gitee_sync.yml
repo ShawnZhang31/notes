@@ -1,0 +1,15 @@
+name: Sync To Gitee
+on:
+  push:
+    branches:
+      - gh-pages
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wearerequired/git-mirror-action@master
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_MIRROR_SYNC }}
+        with:
+          source-repo: "git@github.com:ShawnZhang31/notes.git"
+          destination-repo: "git@gitee.com:shawnzhang31/notes.git"
