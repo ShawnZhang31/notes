@@ -1,8 +1,10 @@
+# 当gh-deploy部署完成后执行该事件
 name: Sync To Gitee
 on: #page_build
-  push:
-    branches:
-      - gh-pages
+  workflow_run:
+    workflows: ["gh-deploy"]
+    types:
+      - completed
 jobs:
   sync:
     runs-on: ubuntu-latest
