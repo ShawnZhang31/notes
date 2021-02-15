@@ -1,5 +1,5 @@
 # 西瓜hub
-![gh-deploy](https://github.com/ShawnZhang31/notes/workflows/gh-deploy/badge.svg)
+![gh-deploy](https://github.com/ShawnZhang31/notes/workflows/gh-deploy/badge.svg) ![Sync To Gitee](https://github.com/ShawnZhang31/notes/workflows/Sync%20To%20Gitee/badge.svg)
 
 
 守着瓜的猹的乱七八糟涉猎笔记，使用mkdos和mkdocs-material构建
