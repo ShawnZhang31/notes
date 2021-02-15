@@ -1,0 +1,34 @@
+site_name: 西瓜hub
+theme:
+  name: material
+  language: zh
+  logo: img/logo_xigua_hub.png
+  favicon: img/logo_xigua_hub.png
+  features:
+    - navigation.expand
+    - search.highlight
+    - search.suggest
+  palette:
+    primary: black #default  https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
+
+# 插件
+plugins:
+  - search:
+      lang:
+        - en  # 默认的搜索目前还不支持zh，以后解决
+        # - jp
+
+# 配置mathjax支持
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - AIOps: 
+    - 概览: aiops.md
+    - 时序数据:
+      - 时序数据特征: aiops/time-series/ts_extracted_features.md
+  - CV: cv.md
