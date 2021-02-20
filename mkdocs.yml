@@ -32,3 +32,5 @@ nav:
       - 事件序列分析的一般步骤: aiops/time-series/ts_guidline.md
       - 时序数据特征: aiops/time-series/ts_extracted_features.md
   - CV: cv.md
+  - AutoML: 
+      - nni: nni/nni.md
