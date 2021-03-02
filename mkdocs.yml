@@ -37,3 +37,5 @@ nav:
   - CV: cv.md
   - AutoML: 
       - nni: nni/nni.md
+  - 乱七八糟:
+    - Git回滚操作: unclassified/git_reset.md
