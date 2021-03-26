@@ -32,10 +32,13 @@ nav:
       - 事件序列分析的一般步骤: aiops/time-series/ts_guidline.md
       - 时序数据特征: aiops/time-series/ts_extracted_features.md
       - 时序常用模型: aiops/time-series/ts_model.md
+    - 根因分析(RCA):
+      - 论文文献:
+        - FluxRank: aiops/rca/paper/fluxrank/fluxrank_paper.md
     - Sentry:
       - Sentry部署: aiops/sentry/sentry_setup.md
   - CV: cv.md
   - AutoML: 
       - nni: nni/nni.md
-  - 乱七八糟:
-    - Git回滚操作: unclassified/git_reset.md
+  - DevOps:
+    - Git回滚操作: devops/git_reset.md
