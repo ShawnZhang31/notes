@@ -77,12 +77,12 @@ FluxRank是通过服务失败触发的（KPI异常检测不属于本文的探讨
 #### 贡献5
 FluxRank是一个可以广泛部署的框架。
 
-## 2. Change Quantification
+## 2. KPI变化的量化
 在*Change Quantification*阶段，我们试图将通过*change degress*测量的设备KPI的变化进行量化。*Change degrees*可以用来对比不同类型的KPI. 另外，当故障发生时根因设备的KPI首先发生变化，受该故障影响的其他的KPI随之发生变化。因此变化开始的时间(*change start time* $T_c$)对于定位根因设备很有帮助。
 
 所以很清晰的一点是，**change quantification的设计目标就是对于大量的多样的KPI迅速而准确的确定change start time和确定服务故障时的变化度(change degree)**。回想一下，传统的异常检测算法无法实现上述目标，因为它们在大量不同KPI的算法选择和参数调整中非常费力。 因此，我们建议在变更量化中使用两步设计：（1）应用绝对导数来识别变更开始时间；（2）使用核密度估计（KDE）来确定变更程度。
 
-### A. Change Start Time
+### A. KPI变化开始时间
 找出KPI指标的change start time($T_c$)问题可以转化为经典的change point detection问题。对于大型的分布式服务，一个服务故障造成的成百上千的KPI需要分析，由于无法进行标注工作，所以监督学习算法不能使用。而且为了快速进行故障恢复要求算了可以快速进行确定$T_c$，因此上面的所说的无监督学习方法效率不足，也不能用于本文的场景。
 
 如前面所述，一般的change检测用于检测出现在任何时刻的change point检测问题，本文中系统服务故障的时间已知，需要开发一个算法用于检测故障出现时刻附近的KPI changes。如图1所示，可以基于服务KPI确定故障开始的时刻$T_f$，故障开始恢复的时间$T_m$是指运维人员确认故障并开始故障处理的时间。由于故障传播的延迟，根因设备的KPI指标可能在$T_f$前已经发生改变。为了确定KPI change start的时间，我们设置一个look-back的window$[T_f-w_1, T_m]$,这里的$w_1$是$T_f$时刻前的时间长度。在实践中$w_1$是一个配置参数。一方面如果$w_1$设置的太大，FluxRank可能会错误的包含一些与服务故障无关的KPI changes。另外一方面，如果$w_1$设置的太小，FluxRank可能会错过根因设备的一些KPI changes。通过一年时间对82个故障进行分析，发现80%的delay是小于9分钟的，最大的delay是19分钟。因此本文根据经验将$w_1$设置为30分钟用于评估。
@@ -91,4 +91,50 @@ FluxRank是一个可以广泛部署的框架。
 
 在生产中，采集粒度可能是分钟级的，所以窗口里面的点可能比较小，而少量的点不支持复杂的change point检测算法。因此这里使用的算法都是只涉及简单的计算的。本文设计了一个简单有效的算法Abs_Dev使用KPI数据的导数来自动、精确、有效的确定change开始的时间。Abs_Dev计算每个KPI点的绝对的导数值。**我们认为，在回溯窗口内达到Abs_Dev的最大输出得分（绝对导数值）的KPI数据点具有最显着的变化，它代表了变化的开始时间。 这样，无需任何手动参数调整，就可以高效，准确地确定更改开始时间。**
 
-**CUSUM**是一个普通的change检测算法。
+**CUSUM**是一个普通的change检测算法。为了对比CUSUM和Abs_Dev对change start time的检测效果，本文对91个KPI异常的change start time进行了标注($T_c^{label}$),使用$T_c$和$T_c^{label}$之间的距离进行算法性能比较:$distance = |T_c - T_c^{label}|$。图4是对接结果。
+
+![Fig. 4](./res/pastimg-2021-04-01-15-58-11.png)
+
+CUSUM_max和Abs_Dev_max表示两个算法在测试集上的得分。Abs_Dev_max要远远小于CUSUM_max,而且Abs_Dev_max要接近于0，这意味着Abs_Dev_max检测的change start times与标记的实际的chage start time非常接近。
+
+![Fig. 5](./res/pastimg-2021-04-01-16-03-30.png)
+Fig. 5显示了两个算法在CPU_IDLE KPI上的输出得分。[20,40]是正常的点，[80,100]是异常点。由于导数直接反应了chang degree，我们可以看到Abs_Dev的最大值反应的刚好是CPU_IDLE KPI正确的change start time。CUSUM如何设置了正确的阈值，也是可以检测出来的，只不过对于数万个指标设置阈值，是不可能的，所以这里使用了CUSUM_max。由于累加和的原因，CUSUM的得分在正确的change start time之后如果有小的changes的话会继续增长，如Fig.5中的左下角所示。所以CUSUM的最大值不能反映正确的chang start time。因此使用Abs_Dev算法来检测KPI指标的change start time.
+
+### B. KPI的变化度
+FluxRank的第一个挑战就是要设计一个非参数控制的轻量级算法用于量化和对比多样的大量的KPI指标的变化情况。因此，我们建议使用观察到的变化概率来表示变化程度，因为该概率自然是定量的，并且可以在不同类型的KPI之间进行比较。 我们找不到其他指标来表示和量化可以满足上述要求的KPI变化。
+
+我们搜集是$[T_c - w_2, T_c)$时间范围内的数据\{$x_i$\}，和$[T_c, T_m]$时间范围内的数据\{$x_j$\}。后面会说明$w_2$的意义。\{$x_i$\}是change之前的数据，\{$x_j$\}是change之后的数据。因此，一个change观测到的概率的数学表示为:$P(\{x_j\}|\{x_i\})$。该公式揭示在change前的\{$x_i$\}的前提下观察change后的$x_j$的概率。这个概率解释了change degree：概率越小，change degree越大。
+
+要计算概率$P(\{x_j\}|\{x_i\})$，我们首先需要计算$\{x_j\}$中的每一个点的概率:$P(x_j|\{x_j\})$。假设$\{x_j\}$是通过一个随机变量$X$生成的，因此可以通过$\{x_i\}$来估计$X$的概率分布。为了区分upward changes和downward changes，我们需要计算上溢概率(overflow probability)$P(X \ge x_j|\{x_i\})$和下溢概率(underflow probability)$P(X \le x_j|\{x_i\})$。我们假定$\{x_j\}$是独立均匀分布，那么我们得以得到$\{x_i\}$的上溢概率$P_o( \{x_j\}|\{x_i\})$和下溢概率$P_u( \{x_j\}|\{x_i\})$:
+
+$$
+\begin{align}
+P_o( \{x_j\}|\{x_i\}) &= \prod_{j=1}^l P(X \ge x_j|\{x_i\})    \\
+P_u( \{x_j\}|\{x_i\}) &= \prod_{j=1}^l P(X \le x_j|\{x_i\})
+\end{align}
+$$
+
+其中$l$是$\{x_j\}$中的点的数量。显然，一个很小的$P_o( \{x_j\}|\{x_i\})$的值表示一个upward change，一个很小的$P_u( \{x_j\}|\{x_i\})$downward change。
+
+$\{x_j\}$的点的数量不仅依赖于$[T_m - T_c]$的长度，而且与KPI数据采集的时间间隔有关。如果两个KPI采集的时间间隔不同，那么$P_o( \{x_j\}|\{x_i\})$和$P_u( \{x_j\}|\{x_i\})$将会非常不同。为了对比不同的时间间隔的KPI change，可以直接使用几何平均，并将负值转化为正直。因此upward change $o$和downward change $u$可以表示为:
+
+$$
+\begin{align}
+o &= -\frac{1}{l}\sum_{j=1}^l \log P(X \ge x_j|\{x_i\})    \\
+u &= -\frac{1}{l}\sum_{j=1}^l \log P(X \le x_j|\{x_i\})
+\end{align}
+$$
+
+那么接下来的问题就是根据$\{x_i\}$估计$X$的概率分布了。通常的方法是假设$X$服从高斯分布，可以通过样本的均值和方差来估计概率分布。但是许多的KPI并不符合高斯分布。例如对于CPU_IDLE KPI表示的是CPU的空闲时间，取值范围出[0, 1]，不服从高斯分布。因此我们使用KDE，KDE可以估计不同的KPI类型的恰当的分布。KDE是一个无参数的根据观测到的样本估计一个随机变量的概率密度方法(probability denstity function, PDF):
+
+$$
+\hat{f}(x) = \frac{1}{n} \sum_{i=1}^n K(x; x_i)
+$$
+
+其中$K$是根据$\{x_i\}$的物理意义选的的核方法，$n$是$\{ x_i \}$的大小。
+
+上面的公式中，$\{x_i\}$用于估计随机变量$X$的概率分布。为了获取一个更加精确的模型，$w_2$应该比$\{x_i\}$的数量多。但是许多KPI都是有周期性的波动的，$X$的概率分布可能随着时间改变，因此如果$w_2$太大话也会造成模型不精确，所以根据经验，我们一般将$w_2$设置为1h。
+
+文章对47个KPI指标进行分析之后，发现三种类型的分布可以覆盖所有47个指标：**Beta分布(Beta distribution)、泊松分布(Poisson distribution)、高斯分布(Gaussian distribution)**，如表1所示。同一个KPI的核方法只用设置一次。此外，与其他基于采样质量的采样方法相比，基于KPI物理意义的分布估计更为精确和稳定。 三种分布讨论如下。
+
+![Table 1](./res/pastimg-2021-04-01-19-31-18.png)
