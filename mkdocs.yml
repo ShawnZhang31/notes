@@ -37,6 +37,8 @@ nav:
         - FluxRank: aiops/rca/paper/fluxrank/fluxrank_paper.md
     - Sentry:
       - Sentry部署: aiops/sentry/sentry_setup.md
+    - AIOps实际:
+      - AIOps实践分享: aiops/pratice/aiops_pratice_1.md
   - CV: cv.md
   - AutoML: 
       - nni: nni/nni.md
