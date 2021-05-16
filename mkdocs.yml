@@ -44,3 +44,6 @@ nav:
       - nni: nni/nni.md
   - DevOps:
     - Git回滚操作: devops/git_reset.md
+  - 杂项:
+    - 魔方还原方法:
+      - 三角魔方还原: misc/magic_boxes/3th_order.md
