@@ -10,7 +10,7 @@ tar zxvf cmake-3.*
 cd cmake-3.*
 ./bootstrap --prefix=/usr/local
 make -j$(nproc)
-make install
+sudo make install
 ```
 3. 验证是否安装成功
 ```bash
