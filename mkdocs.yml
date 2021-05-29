@@ -39,7 +39,9 @@ nav:
       - Sentry部署: aiops/sentry/sentry_setup.md
     - AIOps实际:
       - AIOps实践分享: aiops/pratice/aiops_pratice_1.md
-  - CV: cv.md
+  - CV: 
+    - 开发工具:
+      - Linux安装cmake: cv/dev_tools/cmake_install.md
   - AutoML: 
       - nni: nni/nni.md
   - DevOps:
