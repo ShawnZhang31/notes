@@ -28,7 +28,7 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 nav:
   - ML&DL:
-    - 学习率的主流优化算法: 
+    - 学习率的主流优化算法: AI/learning-rate/learning_rate_optim.md
   - AIOps: 
     - 时序数据:
       - 事件序列分析的一般步骤: aiops/time-series/ts_guidline.md
