@@ -32,6 +32,8 @@ nav:
       - 知识图谱基础: 
         - 知识图谱表示与建模: AI/kg/kg_base/kg_modeling.md
     - 学习率的主流优化算法: AI/learning-rate/learning_rate_optim.md
+    - 机器学习:
+      - 机器学习概论: AI/ML/0_introduction.md
   - AIOps: 
     - 时序数据:
       - 事件序列分析的一般步骤: aiops/time-series/ts_guidline.md
