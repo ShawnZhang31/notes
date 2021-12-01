@@ -1,0 +1,1412 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../img/logo_xigua_hub.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Git回滚操作 - 西瓜hub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9204c3b2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#000000">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../..":"../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#git" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="西瓜hub" class="md-header__button md-logo" aria-label="西瓜hub" data-md-component="logo">
+      
+  <img src="../../img/logo_xigua_hub.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            西瓜hub
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Git回滚操作
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="西瓜hub" class="md-nav__button md-logo" aria-label="西瓜hub" data-md-component="logo">
+      
+  <img src="../../img/logo_xigua_hub.png" alt="logo">
+
+    </a>
+    西瓜hub
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          ML&DL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ML&DL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          ML&DL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_1">
+          知识图谱
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="知识图谱" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          知识图谱
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_1_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_1_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_1_1">
+          知识图谱基础
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="知识图谱基础" data-md-level="3">
+        <label class="md-nav__title" for="__nav_1_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          知识图谱基础
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../AI/kg/kg_base/kg_modeling/" class="md-nav__link">
+        知识图谱表示与建模
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../AI/learning-rate/learning_rate_optim/" class="md-nav__link">
+        学习率的主流优化算法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" data-md-state="indeterminate" type="checkbox" id="__nav_1_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          机器学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="机器学习" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          机器学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../AI/ML/0_introduction/" class="md-nav__link">
+        机器学习概论
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          AIOps
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AIOps" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          AIOps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          时序数据
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="时序数据" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          时序数据
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/time-series/ts_guidline/" class="md-nav__link">
+        事件序列分析的一般步骤
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/time-series/ts_extracted_features/" class="md-nav__link">
+        时序数据特征
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/time-series/ts_model/" class="md-nav__link">
+        时序常用模型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" data-md-state="indeterminate" type="checkbox" id="__nav_2_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          根因分析(RCA)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="根因分析(RCA)" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          根因分析(RCA)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_1">
+          论文文献
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="论文文献" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          论文文献
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/rca/paper/fluxrank/fluxrank_paper/" class="md-nav__link">
+        FluxRank
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" data-md-state="indeterminate" type="checkbox" id="__nav_2_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Sentry
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Sentry" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Sentry
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/sentry/sentry_setup/" class="md-nav__link">
+        Sentry部署
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" data-md-state="indeterminate" type="checkbox" id="__nav_2_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          AIOps实际
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AIOps实际" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          AIOps实际
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aiops/pratice/aiops_pratice_1/" class="md-nav__link">
+        AIOps实践分享
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          CV
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="CV" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          CV
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" data-md-state="indeterminate" type="checkbox" id="__nav_3_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          开发工具
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="开发工具" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          开发工具
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cv/dev_tools/cmake_install/" class="md-nav__link">
+        Linux安装cmake
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          AutoML
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AutoML" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          AutoML
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nni/nni/" class="md-nav__link">
+        nni
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          DevOps
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="DevOps" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          DevOps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Git回滚操作
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Git回滚操作
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-git" class="md-nav__link">
+    1. Git回滚
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Git回滚">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 回滚场景：仅在工作区修改时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 回滚场景：已添加到暂存区时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-commit-push" class="md-nav__link">
+    1.3 回滚场景：已 commit，但还没有 push 时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-commit" class="md-nav__link">
+    1.4 回滚场景：修改本地最近一次 commit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-push" class="md-nav__link">
+    1.5 回滚场景：已 push 到远端时
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-resetrevert" class="md-nav__link">
+    2. reset与revert对比
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 找回已删除的内容
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 找回已删除的内容">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-reflog-commit" class="md-nav__link">
+    3.1 reflog - 恢复到特定 commit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-reflog-commit" class="md-nav__link">
+    3.2 reflog - 恢复特定 commit 中的某个文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-reflog-" class="md-nav__link">
+    3.3 reflog - 找回本地误删除的分支
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    3.4 找回合流后删除的分支
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 关于代码回滚的一些建议
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" data-md-state="indeterminate" type="checkbox" id="__nav_6" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          杂项
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="杂项" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          杂项
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" data-md-state="indeterminate" type="checkbox" id="__nav_6_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1">
+          魔方还原方法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="魔方还原方法" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          魔方还原方法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../misc/magic_boxes/3th_order/" class="md-nav__link">
+        三角魔方还原
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-git" class="md-nav__link">
+    1. Git回滚
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Git回滚">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 回滚场景：仅在工作区修改时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 回滚场景：已添加到暂存区时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-commit-push" class="md-nav__link">
+    1.3 回滚场景：已 commit，但还没有 push 时
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-commit" class="md-nav__link">
+    1.4 回滚场景：修改本地最近一次 commit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-push" class="md-nav__link">
+    1.5 回滚场景：已 push 到远端时
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-resetrevert" class="md-nav__link">
+    2. reset与revert对比
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 找回已删除的内容
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 找回已删除的内容">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-reflog-commit" class="md-nav__link">
+    3.1 reflog - 恢复到特定 commit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-reflog-commit" class="md-nav__link">
+    3.2 reflog - 恢复特定 commit 中的某个文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-reflog-" class="md-nav__link">
+    3.3 reflog - 找回本地误删除的分支
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    3.4 找回合流后删除的分支
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 关于代码回滚的一些建议
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="git">Git 代码回滚与找回的艺术</h1>
+<p>常见的代码回滚场景</p>
+<h2 id="1-git">1. Git回滚</h2>
+<h3 id="11">1.1 回滚场景：仅在工作区修改时</h3>
+<p>当文件在工作区修改，还没有提交到暂存区和本地仓库时，可以用 <code>git checkout -- 文件名</code>来回滚这部分修改。<br />
+不过需要特别留意的是<strong>这些改动没有提交到 Git 仓库，Git 无法追踪其历史，一旦回滚就直接丢弃了。</strong>  </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-33-28.png" /></p>
+<pre><code class="language-shell">git checkout -- build.sh
+</code></pre>
+<h3 id="12">1.2 回滚场景：已添加到暂存区时</h3>
+<p>即执行过 <code>git add</code> 添加到暂存区，但还没 commit，这时可以用 <code>git reset HEAD 文件名</code>回滚。通过<code>git status</code>可以看到相关提示:  </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-33-00.png" /></p>
+<p>执行以下命令回滚暂存区的修改： <code>git reset HEAD build.sh</code></p>
+<p>回滚后工作区会保留该文件的改动，可重新编辑再提交，或者 <code>git checkout -- 文件名</code> 彻底丢弃修改。</p>
+<h3 id="13-commit-push">1.3 回滚场景：已 commit，但还没有 push 时</h3>
+<p>即已经提交到本地代码库了，不过还没有 push 到远端。这时候可用 <code>git reset</code>命令，命令格式为：   </p>
+<p><code>git  reset  &lt;要回滚到的 commit&gt;</code> 或者 <code>git  reset  --hard  &lt;要回滚到的 commit&gt;</code></p>
+<p><strong>需注意的是，提供的是要回滚到的 commit，该 commit 之后的提交记录会被丢弃。</strong></p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-35-56.png" /></p>
+<p><code>git reset</code> 默认会将被丢弃的记录所改动的文件保留在工作区中，以便重新编辑和再提交。加上 <code>--hard</code> 选项则不保留这部分内容，需谨慎使用。   </p>
+<h3 id="14-commit">1.4 回滚场景：修改本地最近一次 commit</h3>
+<p>有时 commit 之后发现刚才没改全，想再次修改后仍记录在一个 commit 里。利用 "git reset" 可达到这个目的，不过，Git 还提供了更简便的方法来修改最近一次 commit。</p>
+<p>命令格式如下： </p>
+<p><code>git  commit --amend  [ -m &lt;commit说明&gt; ]</code></p>
+<p>如果命令中不加<code>-m &lt;commit说明&gt;</code>部分，则 Git 拉起编辑器来输入日志说明。  </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-38-26.png" /></p>
+<p><strong>请注意，"git commit --amend" 只可用于修改本地未 push 的 commit，不要改动已 push 的 commit！</strong></p>
+<h3 id="15-push">1.5 回滚场景：已 push 到远端时</h3>
+<p><strong>注意！此时不能用 "git reset"，需要用 "git revert"！</strong><br />
+<strong>注意！此时不能用 "git reset"，需要用 "git revert"！</strong><br />
+<strong>注意！此时不能用 "git reset"，需要用 "git revert"！</strong>  </p>
+<p>是因为 "git reset" 会抹掉历史，用在已经 push 的记录上会带来各种问题；而 "git revert" 用于回滚某次提交的内容，并生成新的提交，不会抹掉历史。 </p>
+<table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="center">是否抹除历史</th>
+<th align="center">适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">git reset</td>
+<td align="center">是，回滚的历史将消除</td>
+<td align="center">本地未push的记录</td>
+</tr>
+<tr>
+<td align="center">git revert</td>
+<td align="center">否，历史记录保留，回滚后重新生成提交记录</td>
+<td align="center">回滚已push的内容</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-42-41.png" /></p>
+<p>过程中如果遇到问题（如处理冲突时搞乱了），可用 <code>git revert --abort</code> 取消本次回滚行为。  </p>
+<blockquote>
+<p>如果要回滚的是一个合并 commit，revert 时要加上"-m &lt;父节点序号&gt;"，指定回滚后以哪个父节点的记录作为主线。合并的 commit 一般有 2 个父节点，按 1、2 数字排序，对于要回滚“分支合入主干的 commit”，常用"-m 1"，即用主干记录作为主线。 回滚合并 commit 是一个较为复杂的话题，作为一般性建议，应避免回滚合并 commit。对该话题感兴趣的可进一步了解：<br />
+(https://github.com/git/git/blob/master/Documentation/howto/revert-a-faulty-merge.txt)</p>
+</blockquote>
+<h2 id="2-resetrevert">2. reset与revert对比</h2>
+<ul>
+<li>
+<p>分支初始状态如下： <br />
+<img alt="" src="../res/pastimg-2021-03-02-14-46-06.png" /></p>
+</li>
+<li>
+<p>如果执行 <code>git reset B</code>, 工作区会指向 B，其后的提交（C、D）被丢弃。<br />
+<img alt="" src="../res/pastimg-2021-03-02-14-46-47.png" /></p>
+</li>
+</ul>
+<p>此时如果做一次新提交生成 C1，C1 跟 C、D 没有关联。 </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-47-08.png" /></p>
+<ul>
+<li>如果执行 <code>git revert B</code>, 回滚了 B 提交的内容后生成一个新 commit E，原有的历史不会被修改。</li>
+</ul>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-47-38.png" /></p>
+<h2 id="3">3. 找回已删除的内容</h2>
+<p>"git reflog"是恢复本地历史的强力工具，几乎可以恢复所有本地记录，例如被 reset 丢弃掉的 commit、被删掉的分支等，称得上代码找回的“最后一根救命稻草”。</p>
+<p>然而需要注意，并非真正所有记录"git reflog"都能够恢复，有些情况仍然无能为力： </p>
+<ol>
+<li>非本地操作的记录</li>
+</ol>
+<p>"git reflog"能管理的是本地工作区操作记录，非本地（如其他人或在其他机器上）的记录它就无从知晓了。  </p>
+<ol>
+<li>未 commit 的内容</li>
+</ol>
+<p>例如只在工作区或暂存区被回滚的内容（<code>git checkout -- 文件</code> 或 <code>git reset HEAD 文件</code>）。</p>
+<ol>
+<li>太久远的内容</li>
+</ol>
+<p>"git reflog"保留的记录有一定时间限制（默认 90 天），超时的会被自动清理。另外如果主动执行清理命令也会提前清理掉。</p>
+<h3 id="31-reflog-commit">3.1 reflog - 恢复到特定 commit</h3>
+<p>一个典型场景是执行 reset 进行回滚，之后发现回滚错了，要恢复到另一个 commit 的状态。  </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-52-34.png" /></p>
+<p>我们通过<code>git reflog</code>查看 commit 操作历史，找到目标 commit，再通过 reset 恢复到目标 commit。</p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-53-12.png" /></p>
+<p>通过这个示例我们还可以看到清晰、有意义的 commit log 非常有帮助。假如 commit 日志都是"update"、"fix"这类无明确意义的说明，那么即使有"git reflog"这样的工具，想找回目标内容也是一件艰苦的事。</p>
+<h3 id="32-reflog-commit">3.2 reflog - 恢复特定 commit 中的某个文件</h3>
+<p>场景：执行 reset 进行回滚，之后发现丢弃的 commit 中部分文件是需要的。</p>
+<p>解决方法：通过 reflog 找到目标 commit，再通过以下命令恢复目标 commit 中的特定文件。</p>
+<pre><code class="language-shell">git  checkout  &lt;目标 commit&gt;  -- &lt;文件&gt;
+</code></pre>
+<p>示例:
+reset 回滚到 commit 468213d 之后，发现原先最新状态中（即 commit d57f339）的 build.sh 文件还是需要的，于是将该文件版本单独恢复到工作区中。 </p>
+<p><img alt="" src="../res/pastimg-2021-03-02-14-58-35.png" /></p>
+<h3 id="33-reflog-">3.3 reflog - 找回本地误删除的分支</h3>
+<p>场景：用"git branch -D"删除本地分支，后发现删错了，上面还有未合并内容！</p>
+<p>解决方法：通过 reflog 找到分支被删前的 commit，基于目标 commit 重建分支。</p>
+<pre><code>git  branch  &lt;分支名&gt;  &lt;目标commit&gt;
+</code></pre>
+<p>reflog 记录中，"to &lt;分支名&gt;"（如 moving from master to dev/pilot-001） 到切换到其他分支（如 moving from dev/pilot-001 to master）之间的 commit 记录就是分支上的改动，从中选择需要的 commit 重建分支。</p>
+<p><img alt="" src="../res/pastimg-2021-03-02-15-01-34.png" /></p>
+<h3 id="34">3.4 找回合流后删除的分支</h3>
+<blockquote>
+<p>作为 Git 优秀实践之一，开发分支合流之后即可删掉，以保持代码库整洁，只保留活跃的分支。 </p>
+<p>一些同学合流后仍保留着分支，主要出于“分支以后可能还用得到”的想法。其实大可不必，已合入主干的内容不必担心丢失，随时可以找回，包括从特定 commit 重建开发分支。并且，实际需要用到旧开发分支的情况真的很少，一般来说，即使功能有 bug，也是基于主干拉出新分支来修复和验证。</p>
+</blockquote>
+<p>假如要重建已合流分支，可通过主干历史找到分支合并记录，进而找到分支节点，基于该 commit 新建分支，例如： </p>
+<pre><code>git  branch  dev/feature-abc  1f85427
+</code></pre>
+<p><img alt="" src="../res/pastimg-2021-03-02-15-03-43.png" /></p>
+<h2 id="4">4. 关于代码回滚的一些建议</h2>
+<table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="center">特点</th>
+<th align="center">建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>git checkout -- 文件</code></td>
+<td align="center">回滚本地工作区未暂存的改动，被丢弃的内容不可恢复</td>
+<td align="center">操作前务必确认要回滚的改动是不再需要的</td>
+</tr>
+<tr>
+<td align="center"><code>git reset HAED 文件</code></td>
+<td align="center">回滚暂存区的文件改动</td>
+<td align="center">一般不加<code>--hard</code>选项</td>
+</tr>
+<tr>
+<td align="center"><code>git reset &lt;commit&gt;</code></td>
+<td align="center">回滚到目标commit，丢弃掉commit之后的提交记录，将被丢弃记录所做的改动保留在工作区</td>
+<td align="center">1. 只操作本地记录，禁止操作已push的记录； 2. 慎用 <code>--hard</code>选项</td>
+</tr>
+<tr>
+<td align="center"><code>git commit --amend</code></td>
+<td align="center">修改最后一次commit的内容和提交日志</td>
+<td align="center">只操作本地记录，禁止操作已push的记录</td>
+</tr>
+<tr>
+<td align="center"><code>git revert &lt;commit&gt;</code></td>
+<td align="center">回滚相关commit所做的改动，再次提交将生成新的commit，历史记录不受影响</td>
+<td align="center">已push的内容如果回滚并使用revert</td>
+</tr>
+</tbody>
+</table>
+<p>总体来讲，回滚要谨慎，不要过于依赖回滚功能，避免使用"git push -f", <strong>如果用到"git push -f"，你肯定哪里做错了！</strong></p>
+<p><img alt="" src="../res/pastimg-2021-03-02-15-13-13.png" /></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../../nni/nni/" class="md-footer__link md-footer__link--prev" aria-label="上一页: nni" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              nni
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../misc/magic_boxes/3th_order/" class="md-footer__link md-footer__link--next" aria-label="下一页: 三角魔方还原" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              三角魔方还原
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "search.highlight", "search.suggest"], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../../assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+        <script src="../../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

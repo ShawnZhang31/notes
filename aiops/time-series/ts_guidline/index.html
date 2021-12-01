@@ -1,0 +1,1551 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../../img/logo_xigua_hub.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>事件序列分析的一般步骤 - 西瓜hub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.9204c3b2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#000000">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../../..":"../../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="西瓜hub" class="md-header__button md-logo" aria-label="西瓜hub" data-md-component="logo">
+      
+  <img src="../../../img/logo_xigua_hub.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            西瓜hub
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              事件序列分析的一般步骤
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="西瓜hub" class="md-nav__button md-logo" aria-label="西瓜hub" data-md-component="logo">
+      
+  <img src="../../../img/logo_xigua_hub.png" alt="logo">
+
+    </a>
+    西瓜hub
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          ML&DL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ML&DL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          ML&DL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_1">
+          知识图谱
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="知识图谱" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          知识图谱
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_1_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_1_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_1_1">
+          知识图谱基础
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="知识图谱基础" data-md-level="3">
+        <label class="md-nav__title" for="__nav_1_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          知识图谱基础
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../AI/kg/kg_base/kg_modeling/" class="md-nav__link">
+        知识图谱表示与建模
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../AI/learning-rate/learning_rate_optim/" class="md-nav__link">
+        学习率的主流优化算法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" data-md-state="indeterminate" type="checkbox" id="__nav_1_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          机器学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="机器学习" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          机器学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../AI/ML/0_introduction/" class="md-nav__link">
+        机器学习概论
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          AIOps
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AIOps" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          AIOps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          时序数据
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="时序数据" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          时序数据
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          事件序列分析的一般步骤
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        事件序列分析的一般步骤
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. 时序数据预处理
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 时序数据预处理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 纯随机检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 平稳性检验
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 平稳性检验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121" class="md-nav__link">
+    1.2.1 时序图检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122" class="md-nav__link">
+    1.2.2 自相关性检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123" class="md-nav__link">
+    1.2.3 单位根检验
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 建立时间序列模型
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 建立时间序列模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-arma" class="md-nav__link">
+    2.1 ARMA模型
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 模型的检验、预测和评价
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 模型的检验、预测和评价">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 模型检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 模型预测
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    3.3 模型评价
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ts_extracted_features/" class="md-nav__link">
+        时序数据特征
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ts_model/" class="md-nav__link">
+        时序常用模型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" data-md-state="indeterminate" type="checkbox" id="__nav_2_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          根因分析(RCA)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="根因分析(RCA)" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          根因分析(RCA)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_1">
+          论文文献
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="论文文献" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          论文文献
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rca/paper/fluxrank/fluxrank_paper/" class="md-nav__link">
+        FluxRank
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" data-md-state="indeterminate" type="checkbox" id="__nav_2_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Sentry
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Sentry" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Sentry
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sentry/sentry_setup/" class="md-nav__link">
+        Sentry部署
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" data-md-state="indeterminate" type="checkbox" id="__nav_2_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          AIOps实际
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AIOps实际" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          AIOps实际
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pratice/aiops_pratice_1/" class="md-nav__link">
+        AIOps实践分享
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          CV
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="CV" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          CV
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" data-md-state="indeterminate" type="checkbox" id="__nav_3_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          开发工具
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="开发工具" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          开发工具
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cv/dev_tools/cmake_install/" class="md-nav__link">
+        Linux安装cmake
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          AutoML
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="AutoML" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          AutoML
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../nni/nni/" class="md-nav__link">
+        nni
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" data-md-state="indeterminate" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          DevOps
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="DevOps" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          DevOps
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../devops/git_reset/" class="md-nav__link">
+        Git回滚操作
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" data-md-state="indeterminate" type="checkbox" id="__nav_6" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          杂项
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="杂项" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          杂项
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" data-md-state="indeterminate" type="checkbox" id="__nav_6_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1">
+          魔方还原方法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="魔方还原方法" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          魔方还原方法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../misc/magic_boxes/3th_order/" class="md-nav__link">
+        三角魔方还原
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. 时序数据预处理
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 时序数据预处理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 纯随机检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 平稳性检验
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 平稳性检验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121" class="md-nav__link">
+    1.2.1 时序图检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122" class="md-nav__link">
+    1.2.2 自相关性检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123" class="md-nav__link">
+    1.2.3 单位根检验
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 建立时间序列模型
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 建立时间序列模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-arma" class="md-nav__link">
+    2.1 ARMA模型
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 模型的检验、预测和评价
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 模型的检验、预测和评价">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 模型检验
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 模型预测
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    3.3 模型评价
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="_1">时序序列分析的一般步骤(完善中...)</h1>
+<h2 id="1">1. 时序数据预处理</h2>
+<p>对于一个序列，首先要对它纯随机性和平稳性进行检验，这两个重要的检验称为序列的预处理。根据检验结果可以将序列分为不同的类型，对不同类型的序列会采取不同的分析方法。</p>
+<p>对于纯随机序列，又称为<strong>白噪声序列</strong>，序列的各项之间没有任何相关关系，序列在进行完全无序的随机波动，可以终止对该序列的分析。</p>
+<p>对于平稳非白噪声序列，它的均值和方差是常数，现已有一套非常成熟的平稳序列的建模方法。通常是建立一个线性模型来拟合该序列的发展，借此提取该序列的有用信息。ARIMA模型是常用的平稳序列拟合模型。</p>
+<p>对于非平稳序列，由于它的均值和方差不稳定，<strong>处理方法一般是将其转变为平稳序列</strong>，这样就可以应用有关平稳时间序列的分析方法来进行相应的研究。</p>
+<h3 id="11">1.1 纯随机检验</h3>
+<p>如果一个序列是纯随机序列，那么它的序列值之间应该没有任何关系，即满足<span class="arithmatex">\(\gamma(k)=0, k \neq 0\)</span>，<span class="arithmatex">\(\gamma(k)\)</span>表示滞后<span class="arithmatex">\(k\)</span>阶的自协方差函数，这是一种理论上才会出现的理想状态。</p>
+<p>纯随机性检验也称<strong>白噪声检验</strong>，一般是构造检验统计量来检验序列的纯随机性，常用的检验统计量有<strong>Q统计量、LB统计量</strong>，由样本各延迟期数的自相关系数可以计算得到检验统计量，然后计算对应的<span class="arithmatex">\(p\)</span>值，如果<span class="arithmatex">\(p\)</span>值显著大于显著性水平<span class="arithmatex">\(\alpha\)</span>，则表示该序列不能拒绝纯随机的原假设，可以停止对该序列的分析。</p>
+<blockquote>
+<p>Ljung-Box Q统计量用于检验某个时间段内的一系列观测值是不是随机的独立观测值。如果观测值并非彼此独立，一个观测值可能会在 k 个时间单位后与另一个观测值相关，形成一种称为自相关的关系。自相关会削减基于时间的预测模型（例如时间序列图）的准确性，并导致数据的错误解释。</p>
+<p>例如，一家电子公司对电池的月销售量跟踪记录五年。他们想使用这些数据来设计一个时间序列模型，以帮助预测未来的销售额。但是，月销售额可能会受季节性趋势影响。例如，当人们为圣诞玩具购买电池时，每年这个时候的销售额都会提升。因此某一年的月销售额观测值可能会与 12 个月后（滞后为 12）的月销售额观测值相关。</p>
+<p>在选择时间序列模型之前，他们可以评估月销售额差异的自相关。Ljung-Box Q (LBQ) 统计量将检验最多滞后 k 的自相关等于零的原假设（即，数据值在某一滞后数（本例中为 12）之前是随机和独立的）。如果 LBQ 大于特定临界值，则一个或多个滞后的自相关可能显著不同于零，说明在这段时间内各个值并不是独立和随机的。</p>
+<p>LBQ 还用于在拟合时间序列模型（例如 ARMA）后评估假设，以确保残差彼此独立。</p>
+<p>Ljung-Box 是一种 Portmanteau 检验，同时也是 Box-Pierce 卡方统计量的修订版。</p>
+<p>LB统计量与Q统计量差不多</p>
+<p>对于滞后相关的检验，我们常常采用的方法还包括计算ACF和PCAF并观察其图像，但是无论是ACF还是PACF都仅仅考虑是否存在某一特定滞后阶数的相关。<font style="color:red;">LB检验则是基于一系列滞后阶数，判断序列总体的相关性或者说随机性是否存在。</font></p>
+</blockquote>
+<p>LB检验的原假设和备择假设分别为 ：</p>
+<p>H0: 原本的数据都是独立的，即总体的相关系数为0，能观察到的某些相关仅仅产生于随机抽样的误差。即 <span class="arithmatex">\(\hat{\rho_1}^2 = \hat{\rho_2}^2 = \cdots = \hat{\rho_h}^2\)</span> ,其中h是人为给定的,有的时候我们在软件中仅仅给定一个上界,而不是具体的h。</p>
+<p>Ha: 原本的数据不是独立的，即至少存在某个<span class="arithmatex">\(\hat{\rho_k}^2 \neq 0\)</span>,其中<span class="arithmatex">\(k \leq h\)</span>。</p>
+<p>构造的统计量是：
+<span class="arithmatex">\(<span class="arithmatex">\(Q=n(n+2)\sum_{k=1}^h \frac{\hat{\rho_k}^2}{n-k}\)</span>\)</span>
+其中n是样本数量,<span class="arithmatex">\(\hat{\rho_k}^2\)</span>是样本k阶滞后的相关系数，该统计量服从自由度为h的卡方分布。给定显著性水平<span class="arithmatex">\(\alpha\)</span>,则拒绝域是<span class="arithmatex">\(Q&gt;\chi^2_{1-\alpha,h}\)</span>。接受原假设意味着，认为原序列是白噪声序列，否则认为序列存在相关性。</p>
+<p>使用 <a href="https://www.statsmodels.org/devel/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html">statsmodels.stats.diagnostic.acorr_ljungbox</a> 可以方便的对时序数据进行白噪声检验。</p>
+<pre><code class="language-python">def acorr_ljungbox(x, lags=None, boxpierce=False, model_df=0, period=None, return_df=None, auto_lag=False)
+
+&quot;&quot;&quot;
+Ljung-Box test of autocorrelation in residuals.
+
+参数
+    x: 用于检验的时间序列. The data is demeaned before the test statistic is computed.
+
+    lags：{int, array_like}, default None.整数一般取 int(ln(len(x))),即以e为底序列长的对数取整    If lags is an integer then this is taken to be the largest lag that is included, the test result is reported for all smaller lag length. If lags is a list or array, then all lags are included up to the largest lag in the list, however only the tests for the lags in the list are reported. If lags is None, then the default maxlag is currently min((nobs // 2 - 2), 40). After 0.12 this will change to min(10, nobs // 5). The default number of lags changes if period is set.
+
+    boxpierce:bool, default False. If true, then additional to the results of the Ljung-Box test also the Box-Pierce test results are returned.
+
+    model_df:int, default 0. Number of degrees of freedom consumed by the model. In an ARMA model, this value is usually p+q where p is the AR order and q is the MA order. This value is subtracted from the degrees-of-freedom used in the test so that the adjusted dof for the statistics are lags - model_df. If lags - model_df &lt;= 0, then NaN is returned.
+
+    period:int, default None. The period of a Seasonal time series. Used to compute the max lag for seasonal data which uses min(2*period, nobs // 5) if set. If None, then the default rule is used to set the number of lags. When set, must be &gt;= 2.
+
+    return_df: bool, default None. Flag indicating whether to return the result as a single DataFrame with columns lb_stat, lb_pvalue, and optionally bp_stat and bp_pvalue. After 0.12, this will become the only return method. Set to True to return the DataFrame or False to continue returning the 2 - 4 output. If None (the default), a warning is raised.
+
+    auto_lag:bool, default False. Flag indicating whether to automatically determine the optimal lag length based on threshold of maximum correlation value.
+
+Returns
+    lbvalue:float or array,The Ljung-Box test statistic. 测试结果
+
+    pvalue:float or array. The p-value based on chi-square distribution. The p-value is computed as 1.0 - chi2.cdf(lbvalue, dof) where dof is lag - model_df. If lag - model_df &lt;= 0, then NaN is returned for the pvalue. 基于卡方分布的p值
+
+    bpvalue(optional), float or array. The test statistic for Box-Pierce test. Box-Pierce测试的测试统计
+
+    bppvalue(optional), float or array. The p-value based for Box-Pierce test on chi-square distribution. The p-value is computed as 1.0 - chi2.cdf(bpvalue, dof) where dof is lag - model_df. If lag - model_df &lt;= 0, then NaN is returned for the pvalue.基于卡方分布的Box-Pierce测试的p值
+&quot;&quot;&quot;
+</code></pre>
+<p>以下代码展示使用LB统计量检验原始序列和一阶差分序列是否为白噪声序列。在LB统计量检验中，假设原始序列为白噪声序列，当存在p值大于置信水平时，不能拒绝原假设，即原始序列为白噪声序列。</p>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+data = change_data.iloc[:len(change_data)-5]
+
+from statsmodels.stats.diagnostic import acorr_ljungbox
+[lb, p] = acorr_ljungbox(data['CWXT_DB:184:D'], lags=int(np.log(len(data))))
+h = (p &lt; 0.05).sum()
+if h &gt; 0:
+    print('原始序列为非白噪声序列')
+else:
+    print('原始序列为白噪声序列')
+
+[ld1, p1] = acorr_ljungbox(data['CWXT_DB:184:C'].diff().dropna(), lags=int(np.log(len(data))))
+h1 = (p1 &lt; 0.05).sum()
+if h1 &gt; 0:
+    print('一阶差分序列为非白噪声序列')
+else:
+    print('一阶差分序列为白噪声序列')
+
+#结果打印
+&gt;&gt;&gt; 原始序列为非白噪声序列
+&gt;&gt;&gt; 一阶差分序列为白噪声序列
+</code></pre>
+<h3 id="12">1.2 平稳性检验</h3>
+<p><strong>什么是平稳序列？如果时间序列<span class="arithmatex">\(X_t, t \in T\)</span> 在某一常数附近波动且波动范围有限，即有常数均值和常数方差，并且延迟<span class="arithmatex">\(k\)</span>期的序列变量的自协方差和自相关系数是相等的或者说延迟<span class="arithmatex">\(k\)</span>期的序列变量之间的影响程度是一样的，则称为<span class="arithmatex">\(X_t, t \in T\)</span>平稳序列。</strong></p>
+<p>对于序列的平稳性检验有两种检验方法:<br />
+1. <font style="color:red;">根据时序图和自相关图的特征作出判断的图检验，该方法操作简单、应用广泛，缺点是带有主观性;</font> 
+2. <font style="color:red;">另一种是构造检验统计量进行检验的方法，目前最常用的是单位根检验；</font> </p>
+<blockquote>
+<p>平稳的时间序列的性质不随观测时间的变化而变化。因此具有趋势或季节性的时间序列不是平稳时间序列——趋势和季节性使得时间序列在不同时段呈现不同性质。与它们相反，白噪声序列（white noise series）则是平稳的——不管观测的时间如何变化，它看起来都应该是一样的。</p>
+<p><font style="color:red;">在判断平稳性上，下面这个例子容易让人混淆：如果一个循环变化的时间序列没有趋势和季节性，那么它仍然是平稳的。这是因为这些循环变化并没有一个固定的周期，因此在进行观测之前我们无法知道循环变化的峰值和谷值会出现在哪个位置。</font></p>
+</blockquote>
+<h4 id="121">1.2.1 时序图检验</h4>
+<p>根据平稳时间序列的均值和方差都为常数的性质，<strong>平稳序列的时序图显示该序列值始终在一个常数附近随机波动，而且拨动范围有界；如果有明显的趋势性或周期性，那它通常不是平稳序列</strong>.下图展示一个磁盘的使用量随时间变化的时序图：</p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+import pandas as pd
+
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+change_data = change_data.set_index('COLLECTTIME')
+d_data = change_data['CWXT_DB:184:D']
+x = change_data.index
+plt.figure(dpi=1024)
+plt.plot(x, d_data, 'b', label='D disk usage')
+plt.xticks(rotation=45)
+plt.legend(loc='upper left')
+plt.scatter(x, d_data, 10, color='blue')
+plt.show()
+</code></pre>
+<p><img alt="disk_ts" src="disk_ts.png" /></p>
+<h4 id="122">1.2.2 自相关性检验</h4>
+<p><font style="color:red;">平稳序列具有短期相关性，这个性质表明对平稳序列而言通常只有近期的序列值对现时值的影响比较明显，间隔越远的现实值对现实值的影响越小。随着延迟期数<span class="arithmatex">\(k\)</span>的增加，平稳序列的自相关系数<span class="arithmatex">\(\rho_k\)</span>会比较快的衰减趋向于零，并在零附近随机波动，而非平稳序列的自相关系数衰减的比较慢，这就是利用自相关图进行平稳性检验的标准。</font></p>
+<pre><code class="language-python">import pandas as pd
+
+data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+from statsmodels.graphics.tsaplots import plot_acf
+plot_acf(data['CWXT_DB:184:D'])
+</code></pre>
+<p><img alt="disk_ts_ac" src="disk_ts_ac.png" /></p>
+<h4 id="123">1.2.3 单位根检验</h4>
+<p>单位根检验是指检验序列中是否存在单位根，如果存在单位根就是非平稳时间序列。在python中常用的单位根检验的工具是 <a href="https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.adfuller.html">statsmodels.tsa.stattools.adfuller</a> ，即<font style="color:red"><strong>ADF检验</strong></font>。</p>
+<pre><code class="language-python">statsmodels.tsa.stattools.adfuller(x, maxlag=None, regression='c', autolag='AIC', store=False, regresults=False)
+&quot;&quot;&quot;
+Augmented Dickey-Fuller unit root test.
+
+The Augmented Dickey-Fuller test can be used to test for a unit root in a univariate process in the presence of serial correlation.
+&quot;&quot;&quot;
+</code></pre>
+<p>以下代码展示使用ADF检验序列是否存在单位根，如果存在表明序列为非平稳序列，随后对其进行差分运算，直到变为平稳序列。ADF检验的原假设为序列存在单位根，当测试结果小于5%的临界值或者p值小于0.05的显著性水平时表明可以拒绝原假设，小于1%的临界值时极其显著地拒绝原假设。</p>
+<pre><code class="language-python">import pandas as pd
+
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+data = change_data.iloc[:len(change_data) - 5]
+
+from statsmodels.tsa.stattools import adfuller as ADF
+
+d = 0
+adf = ADF(data['CWXT_DB:184:D'])
+print('原始序列单位根检验结果：')
+print(adf)
+while adf[1] &gt;= 0.05:
+    d += 1
+    adf = ADF(data['CWXT_DB:184:C'].diff(d).dropna())
+print('%s阶差分后序列单位根检验结果：' % d)
+print(adf)
+
+#打印结果
+原始序列单位根检验结果：
+(-2.6460462274942982, 0.083848896341219614, 0, 41, {'1%': -3.6009833671885199, '5%': -2.9351348158036012, '10%': -2.6059629803688282}, 958.70113211750595)
+1阶差分后序列单位根检验结果：
+(-5.6569392821447106, 9.5729755923330725e-07, 2, 38, {'1%': -3.6155091011809297, '5%': -2.9412623574865142, '10%': -2.6091995013850418}, 837.33354704864507)
+</code></pre>
+<h2 id="2">2. 建立时间序列模型</h2>
+<p>这里主要讨论非平稳序列时间模型。对于非平稳时间序列模型，最常见的就是ARIMA模型，它是差分运算和ARMA模型的组合，其中ARMA模型主要用于平稳时间序列。前面的例子已经展示如何通过运算将非平稳序列转化为平稳序列，转化后的序列可以使用ARMA模型进行拟合。</p>
+<h3 id="21-arma">2.1 ARMA模型</h3>
+<p>具有以下结构的模型称为自回归移动平均模型，简记为ARMR(p, q):<br />
+<span class="arithmatex">\(<span class="arithmatex">\(x_t = \phi_0 + \phi_1 x_{t-1} + \phi_2 x_{t-2} + \cdots + \phi_p x_{t-p} + \epsilon_t -\theta_1 \epsilon_{t-1} - \theta_2 \epsilon_{t-2} - \cdots - \theta_q \epsilon_{t-q}\)</span>\)</span></p>
+<p>即在时刻的随机变量<span class="arithmatex">\(X_t\)</span>的取值<span class="arithmatex">\(x_t\)</span>是前<span class="arithmatex">\(p\)</span>期和前q期<span class="arithmatex">\(\epsilon_{t-1},\epsilon_{t-2},\cdots,\epsilon_{t-q}\)</span>的多元线性函数，误差项是当期的随机干扰<span class="arithmatex">\(\epsilon_t\)</span>，为零均值白噪声序列。认为<span class="arithmatex">\(x_t\)</span>主要是受过去<span class="arithmatex">\(p\)</span>期的序列值和过去的<span class="arithmatex">\(q\)</span>期的误差项共同影响的。</p>
+<p>接下来是要对模型进行定阶，定阶过程其实就是确定p和q。有两种方法确定p和q：<br />
+<strong>第一种：人为识别。观察序列模型的自相关系数和偏相关系数。自相关系数显示p借拖尾，偏相关系数显示q阶拖尾，此时的p和q即是我们要找的。</strong><br />
+<strong>第二种：相对最优模型识别。取一系列p和q的取值范围，通常取0到序列长的0.1倍，观察所有的p,q组合的BIC信息量，选取信息量最小的那组p,q，以下是具体的操作:</strong></p>
+<pre><code class="language-python">import pandas as pd
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+data = change_data.iloc[:len(change_data)-5]
+data = data.set_index('COLLECTTIME')
+from statsmodels.tsa.arima_model import ARIMA
+pmax = int(len(data) / 10)
+qmax = int(len(data) / 10)
+bic_matrix = []
+for p in range(pmax):
+    tmp = []
+    for q in range(qmax):
+        try:
+            tmp.append(ARIMA(data['CWXT_DB:184:D'], (p, 1, q)).fit().bic)
+        except:
+            tmp.append(None)
+    bic_matrix.append(tmp)
+bic_matrix = pd.DataFrame(bic_matrix)
+print('p, q组合的BIC信息量矩阵：')
+print(bic_matrix)
+p, q = bic_matrix.stack().idxmin()
+print('BIC信息量最小的p，q值：')
+print('p=%s, q=%s' %(p, q))
+#打印结果
+p, q组合的BIC信息量矩阵：
+             0            1            2            3
+0  1275.686824  1273.190435  1272.928341  1276.827800
+1  1276.749128  1271.909634          NaN          NaN
+2  1279.694296  1275.602510          NaN  1280.092482
+3  1278.065999  1278.988595  1282.782535  1285.943494
+BIC信息量最小的p, q值：
+p=1, q=1
+</code></pre>
+<p>跟第一种结果一致。因为原始序列是非平稳的，此处使用的是ARIMA模型，经过一阶差分后成为平稳序列，因而程序中ARIMA模型中的第二个参数(p, d, q)的d=1</p>
+<h2 id="3">3. 模型的检验、预测和评价</h2>
+<h3 id="31">3.1 模型检验</h3>
+<p>上一步确定的模型为ARIMA(1, 1, 1), 确定后需要检验残差是否为白噪声，如果不是白噪声，说明残差中还存在有用信息，需要修改模型或进一步提取。</p>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+data = change_data.iloc[:len(change_data) - 5] #最后5行数据不用于训练
+data = data.set_index('COLLECTTIME')
+
+from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+arima = ARIMA(data['CWXT_DB:184:D'], (1, 1, 1)).fit() #训练已经确定的模型
+x_predict = arima.predict(typ='levels')
+pred_error = (x_predict - data['CWXT_DB:184:D']).dropna() #残差
+lb, p = acorr_ljungbox(pred_error, lags=int(np.log(len(pred_error)))) #对残差进行白噪声检验
+h = (p &lt; 0.05).sum()
+if h &gt; 0:
+    print('模型ARIMA(1, 1, 1)的残差不符合白噪声检验')
+else:
+    print('模型ARIMA(1, 1, 1)的残差符合白噪声检验')
+
+# 打印结果
+模型ARIMA(1, 1, 1)的残差符合白噪声检验
+</code></pre>
+<h3 id="32">3.2 模型预测</h3>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+change_data = pd.read_excel('/Users/Mac/Desktop/change_discdata.xls')
+data = change_data.iloc[:len(change_data) - 5]
+data = data.set_index('COLLECTTIME')
+
+from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+arima = ARIMA(data['CWXT_DB:184:D'], (1, 1, 1)).fit() #模型训练
+predict_value = arima.predict('2014-11-12', '2014-11-16', dynamic='True', typ='levels') #模型预测
+true_value = change_data.iloc[len(change_data) - 5:].set_index('COLLECTTIME')['CWXT_DB:184:D']
+pre_data = pd.concat([true_value, predict_value], axis=1)
+pre_data.columns = ['true_value_D', 'predict_value_D']
+print(pre_data)
+#pre_data.to_excel('/Users/Mac/Desktop/pre_data.xls')
+
+#打印结果           
+COLLECTTIME   true_value_D   predict_value_D                        
+2014-11-12    87249335.55     8.741129e+07
+2014-11-13    86986142.20     8.734455e+07
+2014-11-14    86678240.00     8.739133e+07
+2014-11-15    89766600.00     8.748490e+07
+2014-11-16    89377527.25     8.759774e+07
+</code></pre>
+<h3 id="33">3.3 模型评价</h3>
+<p>对该模型采用3个统计量指标进行评价：平均绝对误差、均方根误差和平均绝对百分误差。由于实验数据是磁盘容量大小，原数据采用kb为单位，模型评价部分将其转化为Gb为单位。</p>
+<pre><code class="language-python">import pandas as pd
+
+pre_data = pd.read_excel('/Users/Mac/Desktop/pre_data.xls')
+pre_value = pre_data['predict_value_D']
+true_value = pre_data['true_value_D']
+change_value = 1024*1024
+
+abs_ = (pre_value - true_value).abs()
+mae_ = abs_.mean()
+rmse_ = ((abs_**2).mean())**0.5
+mape_ = (abs_/true_value).mean()
+
+print('平均绝对误差：%0.4f.\n均方根误差：%0.4f.\n平均绝对百分误差：%0.4f.'%(mae_/change_value, rmse_/change_value, mape_*100))
+
+#打印结果
+平均绝对误差：1.0094.
+均方根误差：1.2831.
+平均绝对百分误差：1.1901.
+</code></pre>
+<h2 id="4">4. 总结</h2>
+<p>时间序列分析的整个过程大致分为以下几步：</p>
+<ol>
+<li>首先进行平稳性检查，如果序列不平稳则对序列进行差分运算，将其转化为平稳序列</li>
+<li>对转化后的平稳序列采用ARIMA模型拟合并利用BIC信息准则确定p,q, 最终确定ARIMA(p, d, q)模型</li>
+<li>对确定后的模型残差进行白噪声检验，如果模型通过检验，采用模型进行预测，并对预测结果进行评价；如果模型没有通过白噪声检验，返回第2部重新优化模型</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../../../AI/ML/0_introduction/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 机器学习概论" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              机器学习概论
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ts_extracted_features/" class="md-footer__link md-footer__link--next" aria-label="下一页: 时序数据特征" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              时序数据特征
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "search.highlight", "search.suggest"], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../../../assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+        <script src="../../../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
