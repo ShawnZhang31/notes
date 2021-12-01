@@ -28,6 +28,9 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 nav:
   - ML&DL:
+    - 知识图谱: 
+      - 知识图谱基础: 
+        - 知识图谱表示与建模: AI/kg/kg_base/kg_modeling.md
     - 学习率的主流优化算法: AI/learning-rate/learning_rate_optim.md
   - AIOps: 
     - 时序数据:
